@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Tu May 22 21:23:51 2020
+ *   Aug 3 12:17:11 2020
  *   Copyright  2020  Dirk Brosswick
  *   Email: dirk.brosswick@googlemail.com
  ****************************************************************************/
@@ -19,16 +19,11 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#ifndef _UPDATE_H
-    #define _UPDATE_H
+#ifndef _stopwatch_APP_MAIN_H
+    #define _stopwatch_APP_MAIN_H
 
     #include <TTGO.h>
 
-    #define UPDATE_REQUEST              _BV(0)
-    #define UPDATE_GET_VERSION_REQUEST  _BV(1)
+    void stopwatch_app_main_setup( uint32_t tile_num );
 
-    void update_tile_setup( void );
-    void update_check_version( void );
-    void update_update_firmware( void );
-
-#endif // _UPDATE_H
+#endif // _stopwatch_APP_MAIN_H

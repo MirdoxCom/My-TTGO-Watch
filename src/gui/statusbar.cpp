@@ -233,7 +233,7 @@ void statusbar_update_task( lv_task_t * task ) {
 }
 
 void statusbar_blectl_event_cb( EventBits_t event, char* msg ) {
-    log_i("blectl event msg: %s", msg );
+    log_i("statusbar blectl event %04x, msg: %s", event, msg );
     switch( event ) {
         case BLECTL_CONNECT:        statusbar_style_icon( STATUSBAR_BLUETOOTH, STATUSBAR_STYLE_WHITE );
                                     break;
@@ -243,7 +243,8 @@ void statusbar_blectl_event_cb( EventBits_t event, char* msg ) {
 }
 
 void statusbar_wifictl_event_cb( EventBits_t event, char* msg ) {
-    log_i("wifictl event msg: %s", msg );
+    log_i("statusbar wifictl event %04x, msg: %s", event, msg );
+
     switch( event ) {
         case WIFICTL_CONNECT:       statusbar_style_icon( STATUSBAR_WIFI, STATUSBAR_STYLE_WHITE );
                                     statusbar_wifi_set_state( true, msg );

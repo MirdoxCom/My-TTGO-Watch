@@ -26,6 +26,8 @@
 #include <esp_wifi.h>
 #include <time.h>
 #include "driver/adc.h"
+#include "esp_pm.h"
+
 
 #include "pmu.h"
 #include "bma.h"
@@ -99,6 +101,7 @@ void powermgm_loop( TTGOClass *ttgo ) {
 
         log_i("Free heap: %d", ESP.getFreeHeap());
         log_i("Free PSRAM heap: %d", ESP.getFreePsram());
+        log_i("uptime: %d", millis() / 1000 );
 
         ttgo->startLvglTick();
         lv_disp_trig_activity(NULL);
@@ -121,6 +124,7 @@ void powermgm_loop( TTGOClass *ttgo ) {
 
         log_i("Free heap: %d", ESP.getFreeHeap());
         log_i("Free PSRAM heap: %d", ESP.getFreePsram());
+        log_i("uptime: %d", millis() / 1000 );
 
         display_standby();
 
