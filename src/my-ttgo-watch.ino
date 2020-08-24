@@ -37,7 +37,9 @@
 
 #include "app/weather/weather.h"
 #include "app/stopwatch/stopwatch_app.h"
+#include "app/crypto_ticker/crypto_ticker.h"
 #include "app/example_app/example_app.h"
+#include "app/osmand/osmand_app.h"
 
 TTGOClass *ttgo = TTGOClass::getWatch();
 
@@ -81,12 +83,15 @@ void setup()
      */
     weather_app_setup();
     stopwatch_app_setup();
+    crypto_ticker_setup();
     example_app_setup();
+    osmand_app_setup();
     /*
      *
      */
 
-    wifictl_on();
+    if (wifictl_get_autoon() && (ttgo->power->isChargeing() || ttgo->power->isVBUSPlug() || (ttgo->power->getBattVoltage() > 3400)))
+        wifictl_on();
 
     splash_screen_stage_finish( ttgo );
     display_set_brightness( display_get_brightness() );

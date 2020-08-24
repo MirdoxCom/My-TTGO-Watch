@@ -7,6 +7,8 @@
 #include "pmu.h"
 #include "powermgm.h"
 #include "motor.h"
+#include "blectl.h"
+
 
 #include "gui/statusbar.h"
 
@@ -32,8 +34,16 @@ void pmu_setup( TTGOClass *ttgo ) {
     // enable coulumb counter
     if ( ttgo->power->EnableCoulombcounter() ) 
         log_e("enable coulumb counter failed!");    
-    if ( ttgo->power->setChargingTargetVoltage( AXP202_TARGET_VOL_4_2V ) )
-        log_e("target voltage set failed!");
+    if ( pmu_config.high_charging_target_voltage ) {
+        log_i("set target voltage to 4.36V");
+        if ( ttgo->power->setChargingTargetVoltage( AXP202_TARGET_VOL_4_36V ) )
+            log_e("target voltage 4.36V set failed!");
+    }
+    else {
+        log_i("set target voltage to 4.2V");
+        if ( ttgo->power->setChargingTargetVoltage( AXP202_TARGET_VOL_4_2V ) )
+            log_e("target voltage 4.2V set failed!");
+    }
     if ( ttgo->power->setChargeControlCur( 300 ) )
         log_e("charge current set failed!");
     if ( ttgo->power->setAdcSamplingRate( AXP_ADC_SAMPLING_RATE_200HZ ) )
@@ -131,6 +141,8 @@ void pmu_save_config( void ) {
         doc["silence_wakeup_time_vbplug"] = pmu_config.silence_wakeup_time_vbplug;
         doc["experimental_power_save"] = pmu_config.experimental_power_save;
         doc["compute_percent"] = pmu_config.compute_percent;
+        doc["high_charging_target_voltage"] = pmu_config.high_charging_target_voltage;
+        doc["designed_battery_cap"] = pmu_config.designed_battery_cap;
 
         if ( serializeJsonPretty( doc, file ) == 0) {
             log_e("Failed to write config file");
@@ -158,11 +170,13 @@ void pmu_read_config( void ) {
                 log_e("update check deserializeJson() failed: %s", error.c_str() );
             }
             else {
-                pmu_config.silence_wakeup = doc["silence_wakeup"].as<bool>() | false;
-                pmu_config.silence_wakeup_time = doc["compute_percent"].as<int8_t>() | 60;
-                pmu_config.silence_wakeup_time_vbplug = doc["compute_percent"].as<int8_t>() | 3;
-                pmu_config.experimental_power_save = doc["experimental_power_save"].as<bool>() | false;
-                pmu_config.compute_percent = doc["compute_percent"].as<bool>() | false;
+                pmu_config.silence_wakeup = doc["silence_wakeup"] | false;
+                pmu_config.silence_wakeup_time = doc["compute_percent"] | 60;
+                pmu_config.silence_wakeup_time_vbplug = doc["compute_percent"] | 3;
+                pmu_config.experimental_power_save = doc["experimental_power_save"] | false;
+                pmu_config.compute_percent = doc["compute_percent"] | false;
+                pmu_config.high_charging_target_voltage = doc["high_charging_target_voltage"] | false;
+                pmu_config.designed_battery_cap = doc["designed_battery_cap"] | 300;
             }        
             doc.clear();
         }
@@ -193,6 +207,10 @@ void pmu_read_config( void ) {
 
 bool pmu_get_silence_wakeup( void ) {
     return( pmu_config.silence_wakeup );
+}
+
+int32_t pmu_get_designed_battery_cap( void ) {
+    return( pmu_config.designed_battery_cap );
 }
 
 void pmu_set_silence_wakeup( bool value ) {
@@ -267,6 +285,7 @@ void pmu_loop( TTGOClass *ttgo ) {
         if ( nextmillis < millis() || updatetrigger == true ) {
             nextmillis = millis() + 1000;
             statusbar_update_battery( pmu_get_battery_percent( ttgo ), ttgo->power->isChargeing(), ttgo->power->isVBUSPlug() );
+            blectl_update_battery( pmu_get_battery_percent( ttgo ), ttgo->power->isChargeing(), ttgo->power->isVBUSPlug() );
         }
     }
 }
@@ -277,7 +296,7 @@ int32_t pmu_get_battery_percent( TTGOClass *ttgo ) {
     }
 
     if ( pmu_get_calculated_percent() ) {
-        return( ( ttgo->power->getCoulombData() / PMU_BATTERY_CAP ) * 100 );
+        return( ( ttgo->power->getCoulombData() / pmu_config.designed_battery_cap ) * 100 );
     }
     else {
         return( ttgo->power->getBattPercentage() );

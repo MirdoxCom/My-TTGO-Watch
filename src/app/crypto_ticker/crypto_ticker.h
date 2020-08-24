@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Aug 21 17:26:00 2020
+ *   Aug 22 16:36:11 2020
  *   Copyright  2020  Chris McNamee
  *   Email: chris.mcna@gmail.com
  ****************************************************************************/
@@ -19,17 +19,32 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#ifndef _stopwatch_APP_H
-    #define _stopwatch_APP_H
+#ifndef _CRYPTO_TICKER_H
+    #define _CRYPTO_TICKER_H
 
     #include <TTGO.h>
 
-//    #define stopwatch_WIDGET    // uncomment if an widget need
+    //#define CRYPTO_TICKER_WIDGET    // uncomment if an widget need, comment to hide
 
-    void stopwatch_app_setup( void );
-    void stopwatch_app_hide_app_icon_info( bool show );
-    void stopwatch_app_hide_widget_icon_info( bool show );
-    uint32_t stopwatch_app_get_app_setup_tile_num( void );
-    uint32_t stopwatch_app_get_app_main_tile_num( void );
+    #define crypto_ticker_JSON_CONFIG_FILE        "/crypto-ticker.json"
 
-#endif // _stopwatch_APP_H
+    
+
+    typedef struct {
+            char symbol[10] = "";
+            bool autosync = true;
+        } crypto_ticker_config_t;
+
+
+    void crypto_ticker_setup( void );
+    crypto_ticker_config_t *crypto_ticker_get_config( void );
+    void crypto_ticker_hide_app_icon_info( bool show );
+    void crypto_ticker_hide_widget_icon_info( bool show );
+    uint32_t crypto_ticker_get_app_setup_tile_num( void );
+    uint32_t crypto_ticker_get_app_main_tile_num( void );
+    void crypto_ticker_jump_to_main( void ) ;
+    void crypto_ticker_jump_to_setup( void );
+
+    void crypto_ticker_save_config( void );
+
+#endif // _CRYPTO_TICKER_H

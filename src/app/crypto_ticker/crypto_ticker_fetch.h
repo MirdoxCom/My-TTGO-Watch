@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Aug 21 17:26:00 2020
+ *   Aug 22 16:36:11 2020
  *   Copyright  2020  Chris McNamee
  *   Email: chris.mcna@gmail.com
  ****************************************************************************/
@@ -19,17 +19,16 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#ifndef _stopwatch_APP_H
-    #define _stopwatch_APP_H
 
-    #include <TTGO.h>
+#include "crypto_ticker_widget.h" //TODO: why is this needed
+#include "crypto_ticker_main.h"   //TODO: why is this needed
 
-//    #define stopwatch_WIDGET    // uncomment if an widget need
+#ifndef _CRYPTO_TICKER_FETCH_H
+    #define _CRYPTO_TICKER_FETCH_H
 
-    void stopwatch_app_setup( void );
-    void stopwatch_app_hide_app_icon_info( bool show );
-    void stopwatch_app_hide_widget_icon_info( bool show );
-    uint32_t stopwatch_app_get_app_setup_tile_num( void );
-    uint32_t stopwatch_app_get_app_main_tile_num( void );
+    #define MY_TTGO_WATCH_HOST    "my-ttgo-watch.co.uk"
 
-#endif // _stopwatch_APP_H
+    int crypto_ticker_fetch_price( crypto_ticker_config_t * crypto_ticker_config, crypto_ticker_widget_data_t * crypto_ticker_today );
+    int crypto_ticker_fetch_statistics( crypto_ticker_config_t *crypto_ticker_config, crypto_ticker_main_data_t *crypto_ticker_main_data );
+
+#endif // _CRYPTO_TICKER_FETCH_H

@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Aug 21 17:26:00 2020
+ *   Aug 22 16:36:11 2020
  *   Copyright  2020  Chris McNamee
  *   Email: chris.mcna@gmail.com
  ****************************************************************************/
@@ -19,17 +19,22 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#ifndef _stopwatch_APP_H
-    #define _stopwatch_APP_H
+#ifndef _CRYPTO_TICKER_MAIN_H
+    #define _CRYPTO_TICKER_MAIN_H
 
     #include <TTGO.h>
 
-//    #define stopwatch_WIDGET    // uncomment if an widget need
+    #define CRYPTO_TICKER_MAIN_SYNC_REQUEST   _BV(0)
 
-    void stopwatch_app_setup( void );
-    void stopwatch_app_hide_app_icon_info( bool show );
-    void stopwatch_app_hide_widget_icon_info( bool show );
-    uint32_t stopwatch_app_get_app_setup_tile_num( void );
-    uint32_t stopwatch_app_get_app_main_tile_num( void );
+    typedef struct {
+        bool valide = false;
+        time_t timestamp = 0;
+        char lastPrice[50] = "";
+        char priceChangePercent[50] = "";
+        char volume[50] = "";
+    } crypto_ticker_main_data_t;
 
-#endif // _stopwatch_APP_H
+    void crypto_ticker_main_setup( uint32_t tile_num );
+    void crypto_ticker_main_sync_request( void );
+
+#endif // _CRYPTO_TICKER_MAIN_H
